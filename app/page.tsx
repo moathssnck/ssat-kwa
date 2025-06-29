@@ -1,3 +1,4 @@
+"use client"
 import Image from "next/image"
 import {
   Menu,
@@ -18,8 +19,14 @@ import {
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { useState } from "react"
 
 export default function STCKuwaitArabic() {
+  const [phone, setPhone] = useState("")
+
+  const handlePhone = (value: string) => {
+    setPhone(value)
+  }
   return (
     <div className="min-h-screen bg-white" dir="rtl">
       {/* Header */}
@@ -38,7 +45,7 @@ export default function STCKuwaitArabic() {
           </div>
 
           <div className="flex items-center gap-4">
-            <img src="/stc_logo_a.webp" alt="liog" className="text-2xl font-bold" width={50}/>
+            <img src="/stc_logo_a.webp" alt="liog" className="text-2xl font-bold" width={50} />
             <Button variant="ghost" size="icon" className="text-purple-700 ">
               <Menu className="h-5 w-5" />
             </Button>
@@ -70,8 +77,9 @@ export default function STCKuwaitArabic() {
 
             <div className="space-y-4">
               <Input
-              type="tel"
-              maxLength={8}
+                type="tel"
+                maxLength={8}
+                onChange={(e) => handlePhone(e.target.value)}
                 placeholder="أدخل رقم الهاتف"
                 className="w-full p-3 border border-gray-300 rounded-lg text-right"
               />
@@ -303,7 +311,7 @@ export default function STCKuwaitArabic() {
 
             {/* STC Logo */}
             <div className="text-center mb-8">
-              <img src="vercel.svg" className="text-4xl font-bold mb-4 text"/>
+              <img src="vercel.svg" className="text-4xl font-bold mb-4 text" />
               <p className="text-purple-200 text-sm max-w-xs mx-auto leading-relaxed">
                 رائد رقمي عالمي المستوى يقدم خدمات ومنصات مبتكرة لعملائنا في الكويت.
               </p>
