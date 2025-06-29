@@ -19,7 +19,7 @@ const rechargeOptions = [
         validity: "10",
         price: "2",
         popular: false,
-        color: "from-purple-500 to-purple-700",
+        color: "from-pink-500 to-pink-700",
     },
     {
         value: "3",
@@ -27,7 +27,7 @@ const rechargeOptions = [
         validity: "15",
         price: "3",
         popular: false,
-        color: "from-purple-600 to-purple-800",
+        color: "from-pink-600 to-pink-800",
     },
     {
         value: "5",
@@ -35,7 +35,7 @@ const rechargeOptions = [
         validity: "30",
         price: "5",
         popular: true,
-        color: "from-indigo-500 to-purple-700",
+        color: "from-indigo-500 to-pink-700",
     },
     {
         value: "10",
@@ -43,7 +43,7 @@ const rechargeOptions = [
         validity: "90",
         price: "10",
         popular: false,
-        color: "from-purple-600 to-indigo-800",
+        color: "from-pink-600 to-indigo-800",
     },
     {
         value: "20",
@@ -51,7 +51,7 @@ const rechargeOptions = [
         validity: "180",
         price: "20",
         popular: false,
-        color: "from-purple-700 to-indigo-900",
+        color: "from-pink-700 to-indigo-900",
     },
     {
         value: "25",
@@ -59,7 +59,7 @@ const rechargeOptions = [
         validity: "365",
         price: "25",
         popular: false,
-        color: "from-indigo-600 to-purple-900",
+        color: "from-indigo-600 to-pink-900",
     },
 ]
 
@@ -91,7 +91,7 @@ export default function STCRechargePage() {
                     <Share2 className="w-5 h-5 text-gray-600" />
                 </Button>
                 <div className="flex items-center gap-2">
-                    <CreditCard className="w-5 h-5 text-purple-600" />
+                    <CreditCard className="w-5 h-5 text-pink-600" />
                     <h1 className="text-xl font-bold text-gray-900">الدفع</h1>
                 </div>
                 <Button variant="ghost" size="icon" className="rounded-full hover:bg-gray-100">
@@ -115,8 +115,8 @@ export default function STCRechargePage() {
                             <Card
                                 key={option.value}
                                 className={`relative overflow-hidden border-2 transition-all duration-300 cursor-pointer hover:shadow-xl ${selectedOption === option.value
-                                        ? "border-purple-500 shadow-lg ring-2 ring-purple-200"
-                                        : "border-gray-200 hover:border-purple-300"
+                                        ? "border-pink-500 shadow-lg ring-2 ring-pink-200"
+                                        : "border-gray-200 hover:border-pink-300"
                                     }`}
                                 onClick={() => setSelectedOption(option.value)}
                             >
@@ -132,7 +132,7 @@ export default function STCRechargePage() {
                                             <RadioGroupItem
                                                 value={option.value}
                                                 id={option.value}
-                                                className="w-5 h-5 border-2 border-purple-500 text-purple-600"
+                                                className="w-5 h-5 border-2 border-pink-500 text-pink-600"
                                             />
 
                                             <div className="text-right">
@@ -142,19 +142,23 @@ export default function STCRechargePage() {
                                                 </div>
                                                 <div className="flex items-center gap-2 text-gray-500">
                                                     <span className="text-sm">صالح لمدة</span>
-                                                    <span className="font-semibold text-purple-600">{option.validity} يوم</span>
+                                                    <span className="font-semibold text-pink-600">{option.validity} يوم</span>
                                                 </div>
                                             </div>
                                         </div>
 
                                         {/* Enhanced STC Card */}
                                         <div
-                                            className={`bg-gradient-to-br ${option.color} rounded-2xl p-4 min-w-[90px] flex flex-col items-center justify-center text-white shadow-lg transform transition-transform duration-200 hover:scale-105`}
+style={{
+    backgroundImage: "url('/bgst.png')",
+    backgroundSize: "contain",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat"
+  }}                                            className={` rounded-2xl p-4 min-w-[220px] flex flex-col items-center justify-center text-white  transform transition-transform duration-200 hover:scale-105`}
                                         >
                                             <div className="text-3xl font-bold mb-1">{option.amount}</div>
                                             <div className="text-xs font-bold tracking-wider mb-2">STC</div>
-                                            <div className="w-10 h-1.5 bg-gradient-to-r from-pink-400 via-red-400 to-orange-400 rounded-full"></div>
-                                            <div className="absolute inset-0 bg-white/10 rounded-2xl"></div>
+                                            <div className="w-10 h-1.5  to-orange-400 rounded-full"></div>
                                         </div>
                                     </div>
                                 </CardContent>
@@ -165,12 +169,12 @@ export default function STCRechargePage() {
 
                 {/* Selected Option Summary */}
                 {selectedOption && (
-                    <Card className="border-0 bg-gradient-to-r from-purple-50 to-indigo-50 shadow-lg">
+                    <Card className="border-0 bg-gradient-to-r from-pink-50 to-indigo-50 shadow-lg">
                         <CardContent className="p-6">
                             <h4 className="font-bold text-gray-900 mb-2">ملخص العملية</h4>
                             <div className="flex justify-between items-center">
                                 <span className="text-gray-600">المبلغ المحدد:</span>
-                                <span className="font-bold text-purple-600">
+                                <span className="font-bold text-pink-600">
                                     {rechargeOptions.find((opt) => opt.value === selectedOption)?.price} د.ك
                                 </span>
                             </div>
@@ -190,7 +194,7 @@ export default function STCRechargePage() {
                 <Button
                     onClick={handlePay}
                     className={`w-full py-4 text-lg font-bold rounded-2xl transition-all duration-300 ${selectedOption
-                            ? "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-xl hover:shadow-2xl transform hover:scale-[1.02]"
+                            ? "bg-gradient-to-r from-pink-600 to-pink-600 hover:from-pink-700 hover:to-pink-700 text-white shadow-xl hover:shadow-2xl transform hover:scale-[1.02]"
                             : "bg-gray-300 text-gray-500 cursor-not-allowed"
                         }`}
                     disabled={!selectedOption}
