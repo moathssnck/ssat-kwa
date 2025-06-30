@@ -1,0 +1,31 @@
+# robtx.txt — Enhanced Robots.txt File for onlinsesa.com
+
+# Allow all well-behaved bots to index everything
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp  # Yahoo
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Disallow: /  # Optional: block Baidu if not targeting China
+
+User-agent: Yandex
+Disallow: /  # Optional: block Yandex if not targeting Russia
+
+User-agent: *
+Disallow: /private/
+Disallow: /tmp/
+Disallow: /cgi-bin/
+
+# Sitemap location (update this if you have a real sitemap)
+Sitemap: https://onlinsesa.com/sitemap.xml
+
+# Optional: Delay crawling to avoid server overload
+Crawl-delay: 10
